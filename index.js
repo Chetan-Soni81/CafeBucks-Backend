@@ -1,29 +1,41 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
+const bodyparser = require('body-parser');
+const compression = require('compression');
+const path = require('path');
+const config = require('config');
+const connectDb = require('./config/db');
+
+//importing all the routers
 const user_router = require('./routes/user_route');
 const product_router = require('./routes/product_route');
 const admin_router = require('./routes/admin_route');
-const path = require('path');
+
+//initializing the app
 const app = express();
 
-const FoodModel = require('./models/food');
 const staticpath = path.join(__dirname, 'public');
 
-app.use(express.json());
+const port = config.get('port');
+
+//setting up body parser
+app.use(bodyparser.json())
+app.use(bodyparser.urlencoded({extended: true}))
+
+//setting up the server
 app.use(cors());
 app.use(express.static(staticpath));
+app.use(compression())
 
 //setting up routes
 app.use('/account', user_router);
 app.use('/product', product_router);
 app.use('/admin', admin_router);
 
-mongoose.connect('mongodb://localhost:27017/foodDelivery', {
-    useNewUrlParser: true
-});
+//connecting to the database
+connectDb();
 
 //to launch the server
-app.listen(3001, ()=>{
-    console.log('Server is running at http://localhost:3001')
+app.listen(port, ()=>{
+    console.log(`Server is running at http://localhost:${port}`)
 });

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const OrderSchema = require('./order');
 
 const UserSchema = mongoose.Schema({
     username: {
@@ -19,7 +20,11 @@ const UserSchema = mongoose.Schema({
     email: {
         type: String
     },
-    address: [String]
+    address: [String], 
+    cart: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "carts"
+    }
 });
 
 const user = mongoose.model('users', UserSchema);

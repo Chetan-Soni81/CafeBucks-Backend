@@ -12,11 +12,14 @@ const foodSchema = new mongoose.Schema({
     about: {
         type: String
     },
+    image : {
+        type: String
+    },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "categories"
     }
-})
+}, {timestamps: true})
 
 const food = mongoose.model('foods', foodSchema);
 module.exports = food

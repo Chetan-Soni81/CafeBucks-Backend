@@ -1,0 +1,4 @@
+{
+    "mongoDB": "mongodb://localhost:27017/foodDelivery",
+    "port": "3001"
+}
