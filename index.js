@@ -36,6 +36,6 @@ app.use('/admin', admin_router);
 connectDb();
 
 //to launch the server
-app.listen(port, ()=>{
+app.listen(port, '192.168.43.183', ()=>{
     console.log(`Server is running at http://localhost:${port}`)
 });
