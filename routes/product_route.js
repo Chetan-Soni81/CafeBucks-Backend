@@ -14,17 +14,34 @@ router.use((req, res, next) => {
 });
 
 //To send all products
-router.get('/', (req, res) => {
-    FoodModel.find().populate('category').exec((err, result) => {
-        if (err) throw err;
+router.get('/', async (req, res) => {
 
-        result.map(data => {
-            let file = fs.readFileSync(data.image);
-            data.image = file.toString('base64')
-        })
 
-        res.json(result);
-    })
+    // FoodModel.find().populate('category').exec((err, result) => {
+    // if (err) throw err;
+
+    // result.map(data => {
+    //     let file = fs.readFileSync(data.image);
+    //     data.image = file.toString('base64')
+    // })
+
+    try {
+
+        const products = await FoodModel.find().populate('category').exec()
+
+        if (!products) {
+            return res.status(404).json({error: "Products not found"})
+        }
+        products.map(data => {
+                let file = fs.readFileSync(data.image);
+                data.image = file.toString('base64')
+            })
+        
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({error: "Server Error"})
+    }
+
 })
 
 router.get('/filtered', (req, res) => {
