@@ -18,8 +18,6 @@ router.get('/', async (req, res) => {
     try {
         const categoryList = await CategoryModel.find();
 
-        console.log(categoryList);
-
         if (!categoryList) {
             return res.status(404).json({ message: "Categories not found" })
         }
