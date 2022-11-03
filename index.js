@@ -20,7 +20,7 @@ const port = config.get('port');
 
 //setting up body parser
 app.use(bodyparser.json())
-app.use(bodyparser.urlencoded({extended: true}))
+app.use(bodyparser.urlencoded({ extended: true }))
 
 //setting up the server
 app.use(cors());
@@ -36,6 +36,6 @@ app.use('/admin', admin_router);
 connectDb();
 
 //to launch the server
-app.listen(port, '192.168.43.183', ()=>{
+app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`)
 });
