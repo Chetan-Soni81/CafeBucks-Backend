@@ -3,17 +3,31 @@ const router = express.Router()
 
 const CategoryModel = require('../models/category')
 
-router.use((req, res, next)=>{
-    console.log('TIme: '+Date.now())
+router.use((req, res, next) => {
+    console.log('TIme: ' + Date.now())
     next()
-}) 
+})
 
 //to send all category objects
-router.get('/', (req, res) => {
-    CategoryModel.find((error, result) => {
-        if (error) throw error;
-        res.json(result)
-    })
+router.get('/', async (req, res) => {
+    // CategoryModel.find((error, result) => {
+    //     if (error) throw error;
+    //     res.json(result)
+    // })
+
+    try {
+        const categoryList = await CategoryModel.find();
+
+        console.log(categoryList);
+
+        if (!categoryList) {
+            return res.status(404).json({ message: "Categories not found" })
+        }
+
+        res.status(200).json(categoryList)
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" })
+    }
 })
 
 //to send category by id
@@ -27,18 +41,18 @@ router.get('/:_id', (req, res) => {
 })
 
 //To insert category objects
-router.post('/create',async (req, res) => {
+router.post('/create', async (req, res) => {
     let categoryName = req.body.categoryName;
 
-    const category = new CategoryModel({categoryName: categoryName});
+    const category = new CategoryModel({ categoryName: categoryName });
 
     try {
         await category.save();
-        res.json({ok : "1"})
-    } 
+        res.json({ ok: "1" })
+    }
     catch (err) {
         console.log(err);
-        res.json({ok: "0"})
+        res.json({ ok: "0" })
     }
 })
 
@@ -46,12 +60,12 @@ router.post('/create',async (req, res) => {
 router.delete('/delete', async (req, res) => {
     let _id = req.query._id;
 
-    try{
-        await CategoryModel.deleteOne({_id: _id});
-        res.json({deleted: true})
+    try {
+        await CategoryModel.deleteOne({ _id: _id });
+        res.json({ deleted: true })
     } catch (err) {
         console.log(err)
-        res.json({deleted: false})
+        res.json({ deleted: false })
     }
 })
 
@@ -61,11 +75,11 @@ router.put('/update', async (req, res) => {
     let categoryName = req.body.categoryName;
 
     try {
-        await CategoryModel.updateOne({_id: _id}, {categoryName: categoryName})
-        res.json({updated: true})
-    } catch(err) {
+        await CategoryModel.updateOne({ _id: _id }, { categoryName: categoryName })
+        res.json({ updated: true })
+    } catch (err) {
         console.log(err)
-        res.json({updated: false})
+        res.json({ updated: false })
     }
 })
 

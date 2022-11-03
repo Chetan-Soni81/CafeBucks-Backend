@@ -6,6 +6,7 @@ const router = express.Router();
 
 const UserModel = require('../models/user');
 const cart_route = require('./cart_routes')
+const category_route = require('./category_route')
 
 const jsonParser = bodyParser.json();
 
@@ -14,6 +15,7 @@ mongoose.connect("mongodb://localhost:27017/foodDelivery", {
 });
 
 router.use('/cart', cart_route)
+router.use('/category', category_route)
 
 router.use((req, res, next) => {
     console.log('Time: ', Date.now())

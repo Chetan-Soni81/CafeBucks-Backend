@@ -30,16 +30,16 @@ router.get('/', async (req, res) => {
         const products = await FoodModel.find().populate('category').exec()
 
         if (!products) {
-            return res.status(404).json({error: "Products not found"})
+            return res.status(404).json({ error: "Products not found" })
         }
         products.map(data => {
-                let file = fs.readFileSync(data.image);
-                data.image = file.toString('base64')
-            })
-        
+            let file = fs.readFileSync(data.image);
+            data.image = file.toString('base64')
+        })
+
         res.status(200).json(products);
     } catch (error) {
-        res.status(500).json({error: "Server Error"})
+        res.status(500).json({ error: "Server Error" })
     }
 
 })
@@ -63,25 +63,32 @@ router.get('/filtered', (req, res) => {
 })
 
 //To send product by id
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     let _id = req.params.id;
 
-    // FoodModel.findById(_id, (err , result) => {
-    //     if(err) throw err;
+    // FoodModel.findById(_id).populate('category').exec((err, result) => {
+    //     if (err) throw err;
 
-    //         let file = fs.readFileSync(result.image);
-    //         result.image = file.toString('base64')
+    //     let file = fs.readFileSync(result.image);
+    //     result.image = file.toString('base64')
 
     //     res.json(result)
     // })
-    FoodModel.findById(_id).populate('category').exec((err, result) => {
-        if (err) throw err;
 
-        let file = fs.readFileSync(result.image);
-        result.image = file.toString('base64')
+    try {
+        const food = await FoodModel.findById(_id).populate('category').exec()
 
-        res.json(result)
-    })
+        if (!food) {
+            return res.status(404).json({error: "Product not found"})
+        }
+
+        let file = fs.readFileSync(food.image);
+        food.image = file.toString('base64')
+
+        res.status(200).json(food)
+    } catch (error) {
+        res.status(500).json({message: "Server Error"})
+    }
 })
 
 //To create a product
