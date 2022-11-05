@@ -57,7 +57,7 @@ router.get('/login/', jsonParser, async (req, res) => {
         }
 
         console.log('result ', user);
-        res.status(200).json({ userId: user._id});
+        res.status(200).json({_id: user._id, username: user.username, firstname: user.firstname, lastname: user.lastname, email: user.email | "" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Server Error" })
@@ -65,7 +65,7 @@ router.get('/login/', jsonParser, async (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-    const { username, password, first_name, last_name } = req.body;
+    const { username, password, firstname, lastname, email } = req.body;
 
     try {
 
@@ -80,8 +80,9 @@ router.post('/signup', async (req, res) => {
         user = new UserModel({
             username,
             password: hashPwd,
-            firstname: first_name,
-            lastname: last_name
+            firstname,
+            lastname,
+            email
         })
 
         await user.save();
