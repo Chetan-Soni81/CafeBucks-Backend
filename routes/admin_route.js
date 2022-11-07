@@ -18,7 +18,7 @@ router.use((req, res, next) => {
 })
 
 //To login as admin
-router.get('/login', async (req, res) => {
+router.get('/login/', async (req, res) => {
     const { username, password } = req.query;
     try {
         const admin = await AdminModel.findOne({ username });
