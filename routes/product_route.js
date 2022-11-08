@@ -92,13 +92,15 @@ router.get('/:id', async (req, res) => {
 })
 
 //To create a product
-router.post('/create', upload.single('productImage'), async (req, res) => {
+router.post('/create', upload.single('image'), async (req, res) => {
 
     let foodName = req.body.foodName;
     let price = req.body.price;
     let about = req.body.about;
     let category = req.body.category;
     let image = req.file
+
+    console.log(image.originalname);
 
     const newPath = './public/images/' + (Date.now() + image.originalname);
 
@@ -152,10 +154,10 @@ router.delete('/delete/:id', async (req, res) => {
 
     try {
         await FoodModel.deleteOne({ _id: _id });
-        res.json({ deleted: true });
+        res.status(200).json({ deleted: true });
     } catch (err) {
         console.log(err);
-        res.json({ deleted: false });
+        res.status(500).json({error: "Server Error"})
     }
 })
 

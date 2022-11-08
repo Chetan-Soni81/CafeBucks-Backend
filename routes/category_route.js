@@ -41,16 +41,27 @@ router.get('/:_id', (req, res) => {
 //To insert category objects
 router.post('/create', async (req, res) => {
     let categoryName = req.body.categoryName;
-
-    const category = new CategoryModel({ categoryName: categoryName });
+    console.log('data recieved: ', categoryName);
 
     try {
-        await category.save();
-        res.json({ ok: "1" })
-    }
-    catch (err) {
-        console.log(err);
-        res.json({ ok: "0" })
+        const category = await CategoryModel.findOne({categoryName: categoryName});
+
+        console.log('first step');
+        
+        if(category) {
+            return res.status(400).json({error: "Category already exists"})
+        }
+        console.log('second step');
+        
+        const newCategory = CategoryModel.create({
+            categoryName
+        })
+        console.log('third step');
+        
+        res.status(201).json({message: "Category created successfully"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({error: "Server Error"})
     }
 })
 
@@ -60,10 +71,10 @@ router.delete('/delete', async (req, res) => {
 
     try {
         await CategoryModel.deleteOne({ _id: _id });
-        res.json({ deleted: true })
+        res.status(200).json({ message: 'Deleted category successfully' })
     } catch (err) {
         console.log(err)
-        res.json({ deleted: false })
+        res.status(500).json({ error: "Server Error" })
     }
 })
 
