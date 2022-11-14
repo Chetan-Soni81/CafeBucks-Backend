@@ -153,6 +153,16 @@ router.delete('/delete/:id', async (req, res) => {
     let _id = req.params.id;
 
     try {
+        const food = await FoodModel.findById(_id)
+
+        if(!food) {
+            res.status(404).json({error: 'Product not found'});
+        }
+
+        const path = food.image;
+
+        fs.unlinkSync(path)
+
         await FoodModel.deleteOne({ _id: _id });
         res.status(200).json({ deleted: true });
     } catch (err) {
